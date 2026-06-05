@@ -1,4 +1,4 @@
-// src/features/countSlice/countSlice.ts
+// src/features/cart/cartSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartItem {
@@ -22,8 +22,8 @@ const initialState: CartState = {
   totalAmount: 0
 };
 
-export const countSlice = createSlice({  // Keep name as countSlice
-  name: 'cart',  // But state name is cart
+export const cartSlice = createSlice({
+  name: 'cart',
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
@@ -87,5 +87,5 @@ export const {
   increaseQuantity,
   decreaseQuantity, 
   clearCart 
-} = countSlice.actions;
-export default countSlice.reducer;
+} = cartSlice.actions;
+export default cartSlice.reducer;
