@@ -1,0 +1,22 @@
+
+import {configureStore} from '@reduxjs/toolkit'
+import counterReducer  from '../features/countSlice/countSlice'
+
+// set up the store
+// export const makeStore = () =>  configureStore({
+//    reducer:{
+
+//    }
+// });
+
+
+export const makeStore=()=>configureStore({
+   reducer:{
+      counter: counterReducer 
+   } 
+})
+// Infer the type of makeStore
+export type AppStore = ReturnType<typeof makeStore>
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<AppStore['getState']>
+export type AppDispatch = AppStore['dispatch']
