@@ -1,4 +1,3 @@
-// src/features/countSlice/countSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartItem {

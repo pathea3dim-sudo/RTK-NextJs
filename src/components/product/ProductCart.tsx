@@ -1,11 +1,9 @@
-// src/components/ProductCard.tsx
+
 "use client";
 
 import { useState } from "react";
-// import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-// import { addToCart } from "@/features/cart/cartSlice";
-import { addToCart } from "@/features/countSlice/countSlice";
+import { addToCart } from "@/features/countSlice/cart/cartSlice";
 
 interface ProductCardProps {
   id: number;
@@ -13,9 +11,8 @@ interface ProductCardProps {
   image: string;
   price: number;
   description: string;
-  rating: number;
-  reviews: number;
-  amazonLink: string;
+  rating?: number;
+  reviews?: number;
 }
 
 export default function ProductCard({
@@ -26,61 +23,91 @@ export default function ProductCard({
   description,
   rating,
   reviews,
-  amazonLink,
 }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const [added, setAdded] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const cartItems = useAppSelector((state) => state.cart.items);
   const itemInCart = cartItems.find((item) => item.id === id);
   const quantity = itemInCart?.quantity || 0;
 
   const handleAddToCart = () => {
-    dispatch(addToCart({ id, name, image, price, quantity: 1, amazonLink }));
+    dispatch(addToCart({ id, name, image, price, quantity: 1 }));
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
 
-  const stars = Array(5).fill(0).map((_, i) => i < Math.round(rating));
-
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden border">
-      <div className="relative bg-gray-50 p-4 h-52 flex items-center justify-center">
-        <img src={image} alt={name} className="max-h-44 object-contain hover:scale-105 transition" />
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-100 p-8">
+      <div 
+        className="relative overflow-hidden"
+        onMouseEnter={() => setShowOverlay(true)}
+        onMouseLeave={() => setShowOverlay(false)}
+      >
+        <img 
+          src={image} 
+          alt={name} 
+          className="w-full h-64 object-cover transition-transform duration-300 hover:scale-110"
+        />
+        
+        <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${
+          showOverlay ? "opacity-40" : "opacity-0"
+        }`}></div>
+        
+        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
+          showOverlay ? "opacity-100" : "opacity-0"
+        }`}>
+          <button className="bg-white text-gray-900 py-2 px-6 rounded-full font-bold hover:bg-gray-100 transition transform hover:scale-105">
+            View Product
+          </button>
+        </div>
+
         {quantity > 0 && (
-          <span className="absolute top-2 right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+          <span className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
             {quantity} in cart
           </span>
         )}
       </div>
 
-      <div className="p-4">
-        <h3 className="font-bold text-gray-800 line-clamp-2">{name}</h3>
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">
+          {name}
+        </h3>
         
-        <div className="flex items-center gap-1 mt-1">
-          {stars.map((filled, i) => (
-            <span key={i} className={filled ? "text-yellow-400" : "text-gray-300"}>★</span>
-          ))}
-          <span className="text-xs text-gray-500 ml-1">({reviews.toLocaleString()})</span>
-        </div>
-
-        <p className="text-sm text-gray-500 line-clamp-2 mt-2">{description}</p>
-
-        <div className="mt-4 flex items-center justify-between gap-2">
-          <span className="text-2xl font-bold">${price.toFixed(2)}</span>
-          
-          <div className="flex gap-2">
-            <a href={amazonLink} target="_blank" rel="noopener noreferrer"
-              className="bg-yellow-400 hover:bg-yellow-500 text-xs font-bold px-3 py-2 rounded-xl transition">
-              Amazon
-            </a>
-            
-            <button onClick={handleAddToCart}
-              className={`flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition ${
-                added ? "bg-green-500 text-white" : "bg-orange-500 hover:bg-orange-600 text-white"
-              }`}>
-              {added ? "✓ Added" : "Add to Cart"}
-            </button>
+        {rating && (
+          <div className="flex items-center gap-1 mb-2">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className={i < Math.round(rating) ? "text-yellow-400 text-sm" : "text-gray-300 text-sm"}>
+                  ★
+                </span>
+              ))}
+            </div>
+            {reviews && (
+              <span className="text-xs text-gray-500 ml-1">({reviews.toLocaleString()})</span>
+            )}
           </div>
+        )}
+
+        <p className="text-gray-500 text-sm mt-2 line-clamp-2">
+          {description}
+        </p>
+
+        <div className="flex items-center justify-between mt-4">
+          <span className="text-gray-900 font-bold text-2xl">
+            ${price.toFixed(2)}
+          </span>
+          
+          <button
+            onClick={handleAddToCart}
+            className={`py-2 px-5 rounded-full font-bold transition-all duration-200 ${
+              added 
+                ? "bg-green-500 text-white" 
+                : "bg-gray-900 text-white hover:bg-gray-800"
+            }`}
+          >
+            {added ? "✓ Added" : "Add to Cart"}
+          </button>
         </div>
       </div>
     </div>

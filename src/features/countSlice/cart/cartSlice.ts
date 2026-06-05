@@ -1,4 +1,4 @@
-// src/features/cart/cartSlice.ts
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartItem {
@@ -7,7 +7,11 @@ export interface CartItem {
   image: string;
   price: number;
   quantity: number;
-  amazonLink: string;
+  category?: string;
+  bestSeller?: boolean;
+  inStock?: boolean;
+  size?: string;
+  color?: string;
 }
 
 interface CartState {

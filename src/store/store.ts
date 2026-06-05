@@ -1,10 +1,9 @@
-// src/store/store.ts
 import { configureStore } from '@reduxjs/toolkit'
 import cartReducer from '@/features/countSlice/countSlice'  // ← Changed path
 
 export const makeStore = () => configureStore({
   reducer: {
-    cart: cartReducer  // State name remains 'cart'
+    cart: cartReducer 
   }
 });
 
